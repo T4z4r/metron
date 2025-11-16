@@ -58,7 +58,12 @@ class _HabitsScreenState extends State<HabitsScreen> with TickerProviderStateMix
               ),
             ),
             child: Padding(
-              padding: const EdgeInsets.all(24.0),
+              padding: EdgeInsets.only(
+                left: 24.0,
+                right: 24.0,
+                top: 24.0,
+                bottom: MediaQuery.of(context).viewInsets.bottom + 24.0,
+              ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -76,6 +81,7 @@ class _HabitsScreenState extends State<HabitsScreen> with TickerProviderStateMix
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 8),
                   Text(
@@ -83,6 +89,9 @@ class _HabitsScreenState extends State<HabitsScreen> with TickerProviderStateMix
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                     ),
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 24),
                   TextField(
@@ -96,6 +105,7 @@ class _HabitsScreenState extends State<HabitsScreen> with TickerProviderStateMix
                       prefixIcon: const Icon(Icons.loop_outlined),
                     ),
                     textInputAction: TextInputAction.done,
+                    maxLength: 100,
                     onSubmitted: (_) async {
                       if (_nameCtrl.text.trim().isNotEmpty) {
                         await prov.addHabit(_nameCtrl.text.trim());
@@ -206,50 +216,60 @@ class _HabitsScreenState extends State<HabitsScreen> with TickerProviderStateMix
             if (habits.isEmpty)
               SliverFillRemaining(
                 child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      AnimatedBuilder(
-                        animation: _pulseController,
-                        builder: (context, child) {
-                          return Transform.scale(
-                            scale: 1.0 + (_pulseController.value * 0.1),
-                            child: Icon(
-                              Icons.loop_outlined,
-                              size: 80,
-                              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        AnimatedBuilder(
+                          animation: _pulseController,
+                          builder: (context, child) {
+                            return Transform.scale(
+                              scale: 1.0 + (_pulseController.value * 0.1),
+                              child: Icon(
+                                Icons.loop_outlined,
+                                size: 80,
+                                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
+                              ),
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'No habits yet',
+                          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                          ),
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 8),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Text(
+                            'Build consistency by creating your first habit',
+                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
                             ),
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'No habits yet',
-                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Build consistency by creating your first habit',
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 32),
-                      ElevatedButton.icon(
-                        onPressed: () => _showAddHabitDialog(context),
-                        icon: const Icon(Icons.add),
-                        label: const Text('Create Habit'),
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                            textAlign: TextAlign.center,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 32),
+                        ElevatedButton.icon(
+                          onPressed: () => _showAddHabitDialog(context),
+                          icon: const Icon(Icons.add),
+                          label: const Text('Create Habit'),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               )
@@ -334,7 +354,7 @@ class _HabitCardState extends State<_HabitCard> {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
       curve: Curves.easeInOut,
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
@@ -350,29 +370,32 @@ class _HabitCardState extends State<_HabitCard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: streakColor.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(10),
                 ),
                 child: Icon(
                   Icons.loop,
                   color: streakColor,
-                  size: 24,
+                  size: 20,
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       widget.habit.name,
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 4),
                     GestureDetector(
@@ -394,7 +417,7 @@ class _HabitCardState extends State<_HabitCard> {
                           const SizedBox(width: 4),
                           Text(
                             streakEmoji,
-                            style: const TextStyle(fontSize: 16),
+                            style: const TextStyle(fontSize: 14),
                           ),
                           Icon(
                             _isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
@@ -418,7 +441,7 @@ class _HabitCardState extends State<_HabitCard> {
                       },
                       borderRadius: BorderRadius.circular(20),
                       child: Container(
-                        padding: const EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(6),
                         decoration: BoxDecoration(
                           color: streakColor.withOpacity(0.1),
                           shape: BoxShape.circle,
@@ -426,7 +449,7 @@ class _HabitCardState extends State<_HabitCard> {
                         child: Icon(
                           Icons.add,
                           color: streakColor,
-                          size: 20,
+                          size: 18,
                         ),
                       ),
                     ),
@@ -471,9 +494,9 @@ class _HabitCardState extends State<_HabitCard> {
                           children: [
                             Text(
                               streakEmoji,
-                              style: const TextStyle(fontSize: 24),
+                              style: const TextStyle(fontSize: 20),
                             ),
-                            const SizedBox(width: 12),
+                            const SizedBox(width: 10),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -484,13 +507,15 @@ class _HabitCardState extends State<_HabitCard> {
                                       color: streakColor,
                                       fontWeight: FontWeight.w600,
                                     ),
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                   Text(
                                     '${widget.habit.streak} days',
-                                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
                                       color: streakColor,
                                       fontWeight: FontWeight.bold,
                                     ),
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ],
                               ),
@@ -498,7 +523,7 @@ class _HabitCardState extends State<_HabitCard> {
                             Icon(
                               Icons.trending_up,
                               color: streakColor,
-                              size: 24,
+                              size: 20,
                             ),
                           ],
                         ),

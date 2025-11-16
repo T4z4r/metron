@@ -40,17 +40,11 @@ class DashboardScreen extends StatelessWidget {
           child: CustomScrollView(
             slivers: [
               SliverAppBar(
-                expandedHeight: 120,
+                expandedHeight: 140,
                 floating: false,
                 pinned: true,
                 flexibleSpace: FlexibleSpaceBar(
-                  title: Text(
-                    'Metron',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.onPrimary,
-                    ),
-                  ),
+                  title: const Text('Dashboard'),
                   centerTitle: true,
                   background: Container(
                     decoration: BoxDecoration(
@@ -58,10 +52,35 @@ class DashboardScreen extends StatelessWidget {
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          Theme.of(context).colorScheme.primary,
-                          Theme.of(context).colorScheme.secondary,
+                          Theme.of(context).colorScheme.primary.withOpacity(0.8),
+                          Theme.of(context).colorScheme.secondary.withOpacity(0.6),
                         ],
                       ),
+                    ),
+                    child: Stack(
+                      children: [
+                        Positioned(
+                          right: 20,
+                          top: 40,
+                          child: Transform.rotate(
+                            angle: -0.2,
+                            child: Icon(
+                              Icons.dashboard,
+                              size: 60,
+                              color: Colors.white.withOpacity(0.3),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          left: 20,
+                          bottom: 20,
+                          child: Icon(
+                            Icons.pie_chart,
+                            size: 40,
+                            color: Colors.white.withOpacity(0.2),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -79,6 +98,7 @@ class DashboardScreen extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                           color: Theme.of(context).colorScheme.onSurface,
                         ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 8),
                       Text(
@@ -86,65 +106,72 @@ class DashboardScreen extends StatelessWidget {
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                         ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 32),
-                      GridView.count(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 16,
-                        mainAxisSpacing: 16,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        childAspectRatio: 1.2,
-                        children: [
-                          _ModernStatCard(
-                            title: 'Projects',
-                            value: projectsCount.toString(),
-                            icon: Icons.folder_outlined,
-                            color: const Color(0xFF3B82F6),
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => const ProjectsScreen()));
-                            },
-                          ),
-                          _ModernStatCard(
-                            title: 'Tasks',
-                            value: tasksCount.toString(),
-                            icon: Icons.checklist_outlined,
-                            color: const Color(0xFF10B981),
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => const ProjectsScreen()));
-                            },
-                          ),
-                          _ModernStatCard(
-                            title: 'Habits',
-                            value: habitsCount.toString(),
-                            icon: Icons.loop_outlined,
-                            color: const Color(0xFFF59E0B),
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => const HabitsScreen()));
-                            },
-                          ),
-                          _ModernStatCard(
-                            title: 'Journal',
-                            value: journalCount.toString(),
-                            icon: Icons.book_outlined,
-                            color: const Color(0xFF8B5CF6),
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => const JournalScreen()));
-                            },
-                          ),
-                        ],
+                      LayoutBuilder(
+                        builder: (context, constraints) {
+                          final screenWidth = constraints.maxWidth;
+                          final crossAxisCount = screenWidth > 600 ? 4 : 2;
+                          return GridView.count(
+                            crossAxisCount: crossAxisCount,
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            childAspectRatio: crossAxisCount == 4 ? 1.0 : 1.3,
+                            children: [
+                              _ModernStatCard(
+                                title: 'Projects',
+                                value: projectsCount.toString(),
+                                icon: Icons.folder_outlined,
+                                color: const Color(0xFF3B82F6),
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) => const ProjectsScreen()));
+                                },
+                              ),
+                              _ModernStatCard(
+                                title: 'Tasks',
+                                value: tasksCount.toString(),
+                                icon: Icons.checklist_outlined,
+                                color: const Color(0xFF10B981),
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) => const ProjectsScreen()));
+                                },
+                              ),
+                              _ModernStatCard(
+                                title: 'Habits',
+                                value: habitsCount.toString(),
+                                icon: Icons.loop_outlined,
+                                color: const Color(0xFFF59E0B),
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) => const HabitsScreen()));
+                                },
+                              ),
+                              _ModernStatCard(
+                                title: 'Journal',
+                                value: journalCount.toString(),
+                                icon: Icons.book_outlined,
+                                color: const Color(0xFF8B5CF6),
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) => const JournalScreen()));
+                                },
+                              ),
+                            ],
+                          );
+                        },
                       ),
                       const SizedBox(height: 32),
                       Text(
@@ -152,6 +179,7 @@ class DashboardScreen extends StatelessWidget {
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 16),
                       _ActionCard(
@@ -221,7 +249,7 @@ class _ModernStatCard extends StatelessWidget {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           curve: Curves.easeInOut,
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
@@ -244,40 +272,55 @@ class _ModernStatCard extends StatelessWidget {
               ),
             ],
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: color.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(
-                  icon,
-                  color: color,
-                  size: 28,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                title,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                value,
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: color,
-                ),
-              ),
-            ],
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final availableWidth = constraints.maxWidth;
+              final availableHeight = constraints.maxHeight;
+              final iconSize = availableWidth > 120 ? 22.0 : 18.0;
+              final titleSize = availableWidth > 120 ? 12.0 : 11.0;
+              final valueSize = availableWidth > 120 ? 18.0 : 16.0;
+
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: color.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(
+                      icon,
+                      color: color,
+                      size: iconSize,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Flexible(
+                    child: Text(
+                      title,
+                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    value,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: color,
+                      fontSize: valueSize,
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
         ),
       ),
@@ -308,7 +351,7 @@ class _ActionCard extends StatelessWidget {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           curve: Curves.easeInOut,
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(16),
@@ -323,34 +366,38 @@ class _ActionCard extends StatelessWidget {
           child: Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.primaryContainer,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(10),
                 ),
                 child: Icon(
                   icon,
                   color: Theme.of(context).colorScheme.onPrimaryContainer,
-                  size: 24,
+                  size: 20,
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       title,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 2),
                     Text(
                       subtitle,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                       ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
@@ -358,7 +405,7 @@ class _ActionCard extends StatelessWidget {
               Icon(
                 Icons.arrow_forward_ios,
                 color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
-                size: 16,
+                size: 14,
               ),
             ],
           ),

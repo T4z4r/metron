@@ -45,7 +45,12 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
               ),
             ),
             child: Padding(
-              padding: const EdgeInsets.all(24.0),
+              padding: EdgeInsets.only(
+                left: 24.0,
+                right: 24.0,
+                top: 24.0,
+                bottom: MediaQuery.of(context).viewInsets.bottom + 24.0,
+              ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -63,6 +68,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 24),
                   TextField(
@@ -75,6 +81,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
                       ),
                       prefixIcon: const Icon(Icons.folder_outlined),
                     ),
+                    maxLength: 100,
                   ),
                   const SizedBox(height: 16),
                   TextField(
@@ -88,6 +95,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
                       prefixIcon: const Icon(Icons.description_outlined),
                     ),
                     maxLines: 3,
+                    maxLength: 500,
                   ),
                   const SizedBox(height: 24),
                   Row(
@@ -177,38 +185,45 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
             if (projects.isEmpty)
               SliverFillRemaining(
                 child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.folder_outlined,
-                        size: 80,
-                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'No projects yet',
-                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.folder_outlined,
+                          size: 80,
+                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
                         ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Create your first project to get started',
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                        const SizedBox(height: 16),
+                        Text(
+                          'No projects yet',
+                          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                          ),
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                      ),
-                      const SizedBox(height: 32),
-                      ElevatedButton.icon(
-                        onPressed: () => _showAddProjectDialog(context),
-                        icon: const Icon(Icons.add),
-                        label: const Text('Create Project'),
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Create your first project to get started',
+                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                          ),
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 32),
+                        ElevatedButton.icon(
+                          onPressed: () => _showAddProjectDialog(context),
+                          icon: const Icon(Icons.add),
+                          label: const Text('Create Project'),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               )
@@ -291,7 +306,7 @@ class _ProjectCard extends StatelessWidget {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           curve: Curves.easeInOut,
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(20),
@@ -307,35 +322,35 @@ class _ProjectCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.primaryContainer,
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(10),
                     ),
                     child: Icon(
                       Icons.folder,
                       color: Theme.of(context).colorScheme.onPrimaryContainer,
-                      size: 24,
+                      size: 20,
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           project.title,
-                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.w600,
                           ),
-                          maxLines: 1,
+                          maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        if (project.description != null && project.description!.isNotEmpty)
+                        if (project.description != null && project.description!.isNotEmpty) ...[
                           const SizedBox(height: 4),
-                        if (project.description != null && project.description!.isNotEmpty)
                           Text(
                             project.description!,
                             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -344,6 +359,7 @@ class _ProjectCard extends StatelessWidget {
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
+                        ],
                       ],
                     ),
                   ),
@@ -373,7 +389,7 @@ class _ProjectCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.primaryContainer,
                       borderRadius: BorderRadius.circular(20),
@@ -383,7 +399,7 @@ class _ProjectCard extends StatelessWidget {
                       children: [
                         Icon(
                           Icons.analytics_outlined,
-                          size: 14,
+                          size: 12,
                           color: Theme.of(context).colorScheme.onPrimaryContainer,
                         ),
                         const SizedBox(width: 4),
@@ -396,10 +412,13 @@ class _ProjectCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Text(
-                    'Created ${DateFormat('MMM d').format(DateTime.parse(project.createdAt))}',
-                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                  Flexible(
+                    child: Text(
+                      'Created ${DateFormat('MMM d').format(DateTime.parse(project.createdAt))}',
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ],
